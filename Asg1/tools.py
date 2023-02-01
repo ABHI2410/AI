@@ -1,7 +1,22 @@
+from copy import deepcopy
+action = ["Up", "Right","Down","Left"]
+row = [ 1, 0, -1, 0 ]
+col = [ 0, -1, 0, 1 ]
+
+class node: 
+    def __init__(self, curent_position, action, cost, depth, parent, empty_tile_position, heuristic = 0 ) -> None:
+        self.state = curent_position
+        self.parent = parent
+        self.action = action 
+        self.cost = cost 
+        self.depth = depth
+        self.empty_tile = empty_tile_position
+        self.heuristic = heuristic
+    
+    def __repr__(self):
+        return f"current state: {self.state} \t parent: {self.parent} \t action:{self.action} \t cost:{self.cost} \t depth:{self.depth} \t empty_tile:{self.empty_tile}"
+    
 class Tools:
-    def create_state_strucutre(self, curent_position, action, cost, depth, parent ):
-        state = {"position": curent_position, "action": action, "g(n)": cost, "depth" : depth, "parent": parent}
-        return state
 
     def find_zero_position(self,state):
         count = 0
@@ -11,67 +26,17 @@ class Tools:
                 if state[i][j] == 0:
                     return (i,j,count)
 
-    def get_legal_moves(self,state):
+    def successor(self,state,parent):
         successor = []
-        row, col, pos = self.find_zero_position(state.get("position"))
-        possible_successor = [2,3,2,3,4,3,2,3,2,]
-        number_of_successor = possible_successor[pos]
-        if number_of_successor == 4:
-            new_state = state.get("position")
-            new_state[0][1],new_state[1],[1] = new_state[1],[1], new_state[0][1]
-            parent = [key for key, val in self.state_archive if val == state]
-            temp_successor = self.create_state_strucutre(new_state, f"Move {new_state[1][1]} Down", new_state[1][1], state.get("depth")+1, parent[0])
-            pos = len(self.state_archive)
-            self.state_archive[pos] = temp_successor
-            successor.append(temp_successor)
+        def isSafe(x,y):
+            return x >= 0 and x < 3 and y >= 0 and y < 3
+        for i in range(4):
+            new_tile_pos = [state.empty_tile[0] + row[i],state.empty_tile[1] + col[i]]
 
-
-            new_state = state.get("position")
-            new_state[1][0],new_state[1],[1] = new_state[1],[1], new_state[1][0]
-            parent = [key for key, val in self.state_archive if val == state]
-            temp_successor = self.create_state_strucutre(new_state, f"Move {new_state[1][1]} Left", new_state[1][1], state.get("depth")+1, parent[0])
-            pos = len(self.state_archive)
-            self.state_archive[pos] = temp_successor
-            successor.append(temp_successor)
-
-            new_state = state.get("position")
-            new_state[1][2],new_state[1],[1] = new_state[1],[1], new_state[1][2]
-            parent = [key for key, val in self.state_archive if val == state]
-            temp_successor = self.create_state_strucutre(new_state, f"Move {new_state[1][1]} Right", new_state[1][1], state.get("depth")+1, parent[0])
-            pos = len(self.state_archive)
-            self.state_archive[pos] = temp_successor
-            successor.append(temp_successor)
-
-            new_state = state.get("position")
-            new_state[2][1],new_state[1],[1] = new_state[1],[1], new_state[2][1]
-            parent = [key for key, val in self.state_archive if val == state]
-            temp_successor = self.create_state_strucutre(new_state, f"Move {new_state[1][1]} Up", new_state[1][1], state.get("depth")+1, parent[0])
-            pos = len(self.state_archive)
-            self.state_archive[pos] = temp_successor
-            successor.append(temp_successor)
-
-        elif number_of_successor == 2:
-            if row == 0 and col == 0:
-                new_state =state.get("position")
-                new_state[0][0], new_state [0][1] = new_state[0][1], new_state[0][0]
-                parent = [key for key, val in self.state_archive if val == state]
-                temp_successor = self.create_state_strucutre(new_state, f"Move {new_state[0][1]} Left", new_state[0][1], state.get("depth")+1, parent[0])
-                pos = len(self.state_archive)
-                self.state_archive[pos] = temp_successor
-                successor.append(temp_successor)
-
-                new_state =state.get("position")
-                new_state[0][0], new_state [1][0] = new_state[1][0], new_state[0][0]
-                parent = [key for key, val in self.state_archive if val == state]
-                temp_successor = self.create_state_strucutre(new_state, f"Move {new_state[1][0]} Up", new_state[1][0], state.get("depth")+1, parent[0])
-                pos = len(self.state_archive)
-                self.state_archive[pos] = temp_successor
-                successor.append(temp_successor)
-
-            elif row == 0 and col == 2:
-
-        elif number_of_successor == 3:
-            
-        else:
-            return False
+            if isSafe(new_tile_pos[0],new_tile_pos[1]):
+                temp = deepcopy(state.state)
+                cost = state.state[new_tile_pos[0]][new_tile_pos[1]]
+                temp[new_tile_pos[0]][new_tile_pos[1]] = 0
+                temp[state.empty_tile[0]][state.empty_tile[1]] = cost
+                successor.append(node(temp,f"Move {cost} {action[i]}",state.cost+cost,state.depth+1,parent,new_tile_pos))
         return successor
