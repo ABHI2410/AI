@@ -1,6 +1,8 @@
 import time
 import sys
 from bfs import bfs
+from dfs import dfs
+from ucs import ucs
 
 if __name__ == "__main__":
     input_file = sys.argv[1]
@@ -37,5 +39,14 @@ if __name__ == "__main__":
         with open (f"trace-{timestr}.txt",'a+') as text_file:
             text_file.write(data_dump)
             text_file.close()
-    state = bfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
-    state.graphSearch()
+    if method == "bfs" or method == "BFS":
+        state = bfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        state.graphSearch()
+    elif method == "dfs" or method == "DFS":
+        state = dfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        state.graphSearch()
+    elif method == "ucs" or method == "UCS":
+        state = ucs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        state.graphSearch()
+    else:
+        print("Invalid input")
