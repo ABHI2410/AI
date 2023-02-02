@@ -42,7 +42,7 @@ class dfs:
         steps = []
         while len(self.fringe) != 0:
             pos = len(self.state_archive)
-            test_first_elem = self.fringe.pop(-1)
+            test_first_elem = self.fringe.pop(0)
             if self.dump:
                 with open (self.file_name,'a+') as text_file:
                     text_file.write(f"Popping 1st element from fringe.\n")
@@ -79,7 +79,7 @@ class dfs:
                             text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
                             text_file.close()
                     for item in suc:
-                        self.fringe.append(item)
+                        self.fringe.insert(0,item)
                     if self.dump:
                         with open (self.file_name,'a+') as text_file:
                             text_file.write(f"Fringe: {self.fringe}\n\n")

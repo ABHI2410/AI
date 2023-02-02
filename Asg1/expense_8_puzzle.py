@@ -5,6 +5,7 @@ from dfs import dfs
 from ucs import ucs
 
 if __name__ == "__main__":
+    start = time.time()
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     method = sys.argv[3]
@@ -50,3 +51,4 @@ if __name__ == "__main__":
         state.graphSearch()
     else:
         print("Invalid input")
+    print(time.time()-start)

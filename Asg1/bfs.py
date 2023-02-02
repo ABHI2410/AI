@@ -14,14 +14,6 @@ class bfs:
         self.state_archive = {}
         self.data_dump = ""
     
-    def result(self,depth,cost,steps):
-        out = f"""Nodes Popped: {self.node_popped} \nNodes Expanded: {self.node_expanded} \nNodes Generated: {self.node_generated} \nMax Fringe Size: {self.max_fringe_size}\nSolution Found at depth {depth} with cost of {cost}. \nSteps: \n"""
-        steps.reverse()
-         
-        for item in steps:
-            out += "     "+str(item) + "\n"
-        return out
-    
     def generate_successor(self,node,pos):
         successor = Tools().successor(node,pos)
         self.node_generated += len(successor)
@@ -59,7 +51,7 @@ class bfs:
                 while test_first_elem.parent != None:
                     steps.append(test_first_elem.action)
                     test_first_elem = self.state_archive.get(test_first_elem.parent)
-                result = self.result(depth,cost,steps)
+                result = Tools().result(depth,cost,steps,self.node_popped,self.node_generated,self.node_expanded,self.max_fringe_size)
                 print(result)
                 if self.dump:
                     with open (self.file_name,'a+') as text_file:
@@ -87,5 +79,9 @@ class bfs:
                     self.node_expanded += 1
                     if self.max_fringe_size < len(self.fringe):
                         self.max_fringe_size = len(self.fringe)            
-
-
+        if len(self.fringe) == 0:
+            print("Solution not found")
+            if self.dump:
+                with open (self.file_name,'a+') as text_file:
+                            text_file.write(f"Soultion no found\n")
+                            text_file.close()
