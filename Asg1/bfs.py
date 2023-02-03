@@ -1,4 +1,5 @@
 from tools import node,Tools
+from datastructure import Queue
 class bfs:
     def __init__(self, source, goal, file_name, dump_flag = False):
         self.start_state = source
@@ -9,7 +10,7 @@ class bfs:
         self.node_expanded = 0
         self.node_generated = 0
         self.max_fringe_size = 0 
-        self.fringe = []
+        self.fringe = Queue()
         self.closed = []
         self.state_archive = {}
         self.data_dump = ""
@@ -26,15 +27,15 @@ class bfs:
                 text_file.close()
         empty_tile = Tools().find_zero_position(self.start_state)
         start = node(self.start_state,{"Start"},0,0,None,empty_tile)
-        self.fringe.append(start)
+        self.fringe.enqueue(start)
         if self.dump:
             with open (self.file_name,'a+') as text_file:
                 text_file.write(f"Adding Start State to fringe.\nCurrent Fringe: {self.fringe}\n\n")
                 text_file.close()
         steps = []
-        while len(self.fringe) != 0:
+        while not self.fringe.is_empty():
             pos = len(self.state_archive)
-            test_first_elem = self.fringe.pop(0)
+            test_first_elem = self.fringe.dequeue()
             if self.dump:
                 with open (self.file_name,'a+') as text_file:
                     text_file.write(f"Popping 1st element from fringe.\n")
@@ -71,17 +72,16 @@ class bfs:
                             text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
                             text_file.close()
                     for item in suc:
-                        self.fringe.append(item)
+                        self.fringe.enqueue(item)
                     if self.dump:
                         with open (self.file_name,'a+') as text_file:
                             text_file.write(f"Fringe: {self.fringe}\n\n")
                             text_file.close()
                     self.node_expanded += 1
-                    if self.max_fringe_size < len(self.fringe):
-                        self.max_fringe_size = len(self.fringe)            
-        if len(self.fringe) == 0:
-            print("Solution not found")
-            if self.dump:
-                with open (self.file_name,'a+') as text_file:
-                            text_file.write(f"Soultion no found\n")
-                            text_file.close()
+                    if self.max_fringe_size < self.fringe.len_queue():
+                        self.max_fringe_size = self.fringe.len_queue()           
+        print("Solution not found")
+        if self.dump:
+            with open (self.file_name,'a+') as text_file:
+                        text_file.write(f"Soultion no found\n")
+                        text_file.close()
