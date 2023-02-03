@@ -3,8 +3,11 @@ import sys
 from bfs import bfs
 from dfs import dfs
 from ucs import ucs
+from dls import dls
+from ids import ids
 
 if __name__ == "__main__":
+    start = time.time()
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     method = sys.argv[3]
@@ -16,6 +19,10 @@ if __name__ == "__main__":
             dump_flag = False
     except:
         dump_flag = False
+    try:
+        depth_limit = int(sys.argv[5])
+    except:
+        pass
     with open (input_file , "r") as file:
         data = file.readlines()
     data = data[0:3]
@@ -41,12 +48,19 @@ if __name__ == "__main__":
             text_file.close()
     if method == "bfs" or method == "BFS":
         state = bfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
-        state.graphSearch()
+        result = state.graphSearch()
     elif method == "dfs" or method == "DFS":
         state = dfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
-        state.graphSearch()
+        result = state.graphSearch()
     elif method == "ucs" or method == "UCS":
         state = ucs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
-        state.graphSearch()
+        result = state.graphSearch()
+    elif method == "dls" or method == "DLS":
+        state = dls(input, output,f"trace-{timestr}.txt", depth_limit,dump_flag = dump_flag)
+        result = state.graphSearch()
+    elif method == "ids" or method == "IDS":
+        state = ids(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        result = state.ids()
     else:
         print("Invalid input")
+    print(time.time()-start)

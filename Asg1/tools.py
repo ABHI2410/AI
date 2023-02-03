@@ -26,6 +26,13 @@ class Tools:
                 if state[i][j] == 0:
                     return (i,j,count)
 
+    def result(self,depth,cost,steps,node_popped,node_generated,node_expanded,max_fringe_size):
+        out = f"""Nodes Popped: {node_popped} \nNodes Expanded: {node_expanded} \nNodes Generated: {node_generated} \nMax Fringe Size: {max_fringe_size}\nSolution Found at depth {depth} with cost of {cost}. \nSteps: \n"""
+        steps.reverse()
+        for item in steps:
+            out += "     "+str(item) + "\n"
+        return out
+
     def successor(self,state,parent):
         successor = []
         def isSafe(x,y):

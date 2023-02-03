@@ -1,4 +1,5 @@
 from tools import node,Tools
+from datastructure import Stack
 class dfs:
     def __init__(self, source, goal, file_name, dump_flag = False):
         self.start_state = source
@@ -9,18 +10,10 @@ class dfs:
         self.node_expanded = 0
         self.node_generated = 0
         self.max_fringe_size = 0 
-        self.fringe = []
+        self.fringe = Stack()
         self.closed = []
         self.state_archive = {}
         self.data_dump = ""
-    
-    def result(self,depth,cost,steps):
-        out = f"""Nodes Popped: {self.node_popped} \nNodes Expanded: {self.node_expanded} \nNodes Generated: {self.node_generated} \nMax Fringe Size: {self.max_fringe_size}\nSolution Found at depth {depth} with cost of {cost}. \nSteps: \n"""
-        steps.reverse()
-         
-        for item in steps:
-            out += "     "+str(item) + "\n"
-        return out
     
     def generate_successor(self,node,pos):
         successor = Tools().successor(node,pos)
@@ -28,21 +21,29 @@ class dfs:
         return successor
 
     def graphSearch(self):
+        def is_cycle(node):
+            state = node.state
+            while node.parent is not None:
+                if state == self.state_archive[node.parent].state:
+                    return True
+                node = self.state_archive[node.parent]
+            return False
         if self.dump:
             with open (self.file_name,'a+') as text_file:
                 text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in BFS Fashion\n")
                 text_file.close()
         empty_tile = Tools().find_zero_position(self.start_state)
         start = node(self.start_state,{"Start"},0,0,None,empty_tile)
-        self.fringe.append(start)
+        self.fringe.push(start)
         if self.dump:
             with open (self.file_name,'a+') as text_file:
                 text_file.write(f"Adding Start State to fringe.\nCurrent Fringe: {self.fringe}\n\n")
                 text_file.close()
         steps = []
-        while len(self.fringe) != 0:
+        while not self.fringe.is_empty():
+            print(self.fringe.len_stack())
             pos = len(self.state_archive)
-            test_first_elem = self.fringe.pop(-1)
+            test_first_elem = self.fringe.pop()
             if self.dump:
                 with open (self.file_name,'a+') as text_file:
                     text_file.write(f"Popping 1st element from fringe.\n")
@@ -59,7 +60,7 @@ class dfs:
                 while test_first_elem.parent != None:
                     steps.append(test_first_elem.action)
                     test_first_elem = self.state_archive.get(test_first_elem.parent)
-                result = self.result(depth,cost,steps)
+                result = Tools().result(depth,cost,steps,self.node_popped,self.node_generated,self.node_expanded,self.max_fringe_size)
                 print(result)
                 if self.dump:
                     with open (self.file_name,'a+') as text_file:
@@ -67,6 +68,7 @@ class dfs:
                         text_file.close()
                 break
             else:
+                # if not is_cycle(test_first_elem):
                 if self.dump:
                     with open (self.file_name,'a+') as text_file:
                         text_file.write(f"Current state is not goal state, generating successors.\nGenerating successors to state > {test_first_elem}\n")
@@ -79,13 +81,15 @@ class dfs:
                             text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
                             text_file.close()
                     for item in suc:
-                        self.fringe.append(item)
+                        if item.state not in self.closed:
+                            self.fringe.push(item)
                     if self.dump:
                         with open (self.file_name,'a+') as text_file:
                             text_file.write(f"Fringe: {self.fringe}\n\n")
                             text_file.close()
                     self.node_expanded += 1
-                    if self.max_fringe_size < len(self.fringe):
-                        self.max_fringe_size = len(self.fringe)            
+                    if self.max_fringe_size < self.fringe.len_stack():
+                        self.max_fringe_size = self.fringe.len_stack()           
+        print("No solution Found")
 
 
