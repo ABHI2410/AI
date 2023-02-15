@@ -47,3 +47,14 @@ class Tools:
                 temp[state.empty_tile[0]][state.empty_tile[1]] = cost
                 successor.append(node(temp,f"Move {cost} {action[i]}",state.cost+cost,state.depth+1,parent,new_tile_pos))
         return successor
+
+
+    def heuristic(self):
+    total_cost = 0
+    for i in range(3):
+        for j in range(3):
+            if self.state[i][j] != 0:
+                target_i, target_j = divmod(self.state[i][j]-1, 3)
+                total_cost += abs(i - target_i) + abs(j - target_j)
+                total_cost += self.state[i][j]  
+    return total_cost

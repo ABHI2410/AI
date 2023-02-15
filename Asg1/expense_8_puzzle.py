@@ -5,6 +5,8 @@ from dfs import dfs
 from ucs import ucs
 from dls import dls
 from ids import ids
+from greedy import greedy
+from astar import astar
 
 if __name__ == "__main__":
     start = time.time()
@@ -46,6 +48,8 @@ if __name__ == "__main__":
         with open (f"trace-{timestr}.txt",'a+') as text_file:
             text_file.write(data_dump)
             text_file.close()
+
+
     if method == "bfs" or method == "BFS":
         state = bfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
         result = state.graphSearch()
@@ -61,6 +65,12 @@ if __name__ == "__main__":
     elif method == "ids" or method == "IDS":
         state = ids(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
         result = state.ids()
+    elif method == "greedy" or method == "GREEDY":
+        state = greedy(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        result = state.graphSearch()
+    elif method == "a*" or method == "A*":
+        state = astar(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        result = state.graphSearh()
     else:
         print("Invalid input")
     print(time.time()-start)

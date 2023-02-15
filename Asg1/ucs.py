@@ -58,7 +58,7 @@ class ucs:
                     with open (self.file_name,'a+') as text_file:
                         text_file.write(f"{result}\n")
                         text_file.close()
-                break
+                return True
             else:
                 if self.dump:
                     with open (self.file_name,'a+') as text_file:
@@ -86,5 +86,6 @@ class ucs:
             with open (self.file_name,'a+') as text_file:
                         text_file.write(f"Soultion no found\n")
                         text_file.close()
+        return False
 
 

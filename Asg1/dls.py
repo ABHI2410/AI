@@ -91,6 +91,11 @@ class dls:
                         self.node_expanded += 1
                         if self.max_fringe_size < self.fringe.len_stack():
                             self.max_fringe_size = self.fringe.len_stack()   
-                            
-        return False
+        print("Solution not found")
+        if self.dump:
+            with open (self.file_name,'a+') as text_file:
+                        text_file.write(f"Soultion no found\n")
+                        text_file.close()
+        return False       
+        
 

@@ -41,7 +41,6 @@ class dfs:
                 text_file.close()
         steps = []
         while not self.fringe.is_empty():
-            print(self.fringe.len_stack())
             pos = len(self.state_archive)
             test_first_elem = self.fringe.pop()
             if self.dump:
@@ -66,30 +65,36 @@ class dfs:
                     with open (self.file_name,'a+') as text_file:
                         text_file.write(f"{result}\n")
                         text_file.close()
-                break
+                return True
             else:
-                # if not is_cycle(test_first_elem):
-                if self.dump:
-                    with open (self.file_name,'a+') as text_file:
-                        text_file.write(f"Current state is not goal state, generating successors.\nGenerating successors to state > {test_first_elem}\n")
-                        text_file.close()
-                if test_first_elem.state not in self.closed:
-                    self.closed.append(test_first_elem.state)
-                    suc = self.generate_successor(test_first_elem,pos)
+                #As DFS can be exaustive limiting depth for searching to 30. 
+                if test_first_elem.depth < 30:
                     if self.dump:
                         with open (self.file_name,'a+') as text_file:
-                            text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
+                            text_file.write(f"Current state is not goal state, generating successors.\nGenerating successors to state > {test_first_elem}\n")
                             text_file.close()
-                    for item in suc:
-                        if item.state not in self.closed:
-                            self.fringe.push(item)
-                    if self.dump:
-                        with open (self.file_name,'a+') as text_file:
-                            text_file.write(f"Fringe: {self.fringe}\n\n")
-                            text_file.close()
-                    self.node_expanded += 1
-                    if self.max_fringe_size < self.fringe.len_stack():
-                        self.max_fringe_size = self.fringe.len_stack()           
+                    if test_first_elem.state not in self.closed:
+                        self.closed.append(test_first_elem.state)
+                        suc = self.generate_successor(test_first_elem,pos)
+                        if self.dump:
+                            with open (self.file_name,'a+') as text_file:
+                                text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
+                                text_file.close()
+                        for item in suc:
+                            if item.state not in self.closed:
+                                self.fringe.push(item)
+                        if self.dump:
+                            with open (self.file_name,'a+') as text_file:
+                                text_file.write(f"Fringe: {self.fringe}\n\n")
+                                text_file.close()
+                        self.node_expanded += 1
+                        if self.max_fringe_size < self.fringe.len_stack():
+                            self.max_fringe_size = self.fringe.len_stack()           
         print("No solution Found")
+        if self.dump:
+            with open (self.file_name,'a+') as text_file:
+                        text_file.write(f"Soultion no found\n")
+                        text_file.close()
+        return False
 
 
