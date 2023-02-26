@@ -1,5 +1,5 @@
 from tools import node,Tools
-from datastructure import Queue
+from datastructure import PriorityQueue1
 class greedy:
     def __init__(self, source, goal, file_name, dump_flag = False):
         self.start_state = source
@@ -10,24 +10,24 @@ class greedy:
         self.node_expanded = 0
         self.node_generated = 0
         self.max_fringe_size = 0 
-        self.fringe = Queue()
+        self.fringe = PriorityQueue1()
         self.closed = []
         self.state_archive = {}
         self.data_dump = ""
     
     def generate_successor(self,node,pos):
-        successor = Tools().successor(node,pos)
+        successor = Tools().successor(node,pos,method="greedy")
         self.node_generated += len(successor)
         return successor
 
     def graphSearch(self):
         if self.dump:
             with open (self.file_name,'a+') as text_file:
-                text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in BFS Fashion\n")
+                text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in Greedy Fashion\n")
                 text_file.close()
         empty_tile = Tools().find_zero_position(self.start_state)
-        heuristic = Tools().heuristic()
-        start = node(self.start_state,{"Start"},0,0,None,empty_tile)
+        heuristic = Tools().heuristic(self.start_state,self.goal_state)
+        start = node(self.start_state,self.goal_state,{"Start"},0,0,None,empty_tile,heuristic=heuristic)
         self.fringe.enqueue(start)
         if self.dump:
             with open (self.file_name,'a+') as text_file:

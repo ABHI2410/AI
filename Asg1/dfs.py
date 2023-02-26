@@ -1,5 +1,6 @@
 from tools import node,Tools
 from datastructure import Stack
+import sys
 class dfs:
     def __init__(self, source, goal, file_name, dump_flag = False):
         self.start_state = source
@@ -13,7 +14,7 @@ class dfs:
         self.fringe = Stack()
         self.closed = []
         self.state_archive = {}
-        self.data_dump = ""
+        self.depth_limit = 20 # to remove the limit change the value to sys.maxint e.g: self.depth_limit = sys.maxint
     
     def generate_successor(self,node,pos):
         successor = Tools().successor(node,pos)
@@ -30,19 +31,24 @@ class dfs:
             return False
         if self.dump:
             with open (self.file_name,'a+') as text_file:
-                text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in BFS Fashion\n")
+                text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in DFS Fashion\n")
                 text_file.close()
         empty_tile = Tools().find_zero_position(self.start_state)
-        start = node(self.start_state,{"Start"},0,0,None,empty_tile)
-        self.fringe.push(start)
+        start = node(self.start_state,self.goal_state,{"Start"},0,0,None,empty_tile)
+        self.fringe.enqueue(start)
         if self.dump:
             with open (self.file_name,'a+') as text_file:
                 text_file.write(f"Adding Start State to fringe.\nCurrent Fringe: {self.fringe}\n\n")
                 text_file.close()
         steps = []
+        print(f"As DFS can be exaustive limiting depth for searching to {self.depth_limit}.")
+        if self.dump:
+            with open (self.file_name,'a+') as text_file:
+                    text_file.write(f"As DFS can be exaustive limiting depth for searching to {self.depth_limit}.")
+                    text_file.close()
         while not self.fringe.is_empty():
             pos = len(self.state_archive)
-            test_first_elem = self.fringe.pop()
+            test_first_elem = self.fringe.dequeue()
             if self.dump:
                 with open (self.file_name,'a+') as text_file:
                     text_file.write(f"Popping 1st element from fringe.\n")
@@ -67,8 +73,7 @@ class dfs:
                         text_file.close()
                 return True
             else:
-                #As DFS can be exaustive limiting depth for searching to 30. 
-                if test_first_elem.depth < 30:
+                if test_first_elem.depth < self.depth_limit:
                     if self.dump:
                         with open (self.file_name,'a+') as text_file:
                             text_file.write(f"Current state is not goal state, generating successors.\nGenerating successors to state > {test_first_elem}\n")
@@ -82,14 +87,14 @@ class dfs:
                                 text_file.close()
                         for item in suc:
                             if item.state not in self.closed:
-                                self.fringe.push(item)
+                                self.fringe.enqueue(item)
                         if self.dump:
                             with open (self.file_name,'a+') as text_file:
                                 text_file.write(f"Fringe: {self.fringe}\n\n")
                                 text_file.close()
                         self.node_expanded += 1
-                        if self.max_fringe_size < self.fringe.len_stack():
-                            self.max_fringe_size = self.fringe.len_stack()           
+                        if self.max_fringe_size < self.fringe.len_queue():
+                            self.max_fringe_size = self.fringe.len_queue()           
         print("No solution Found")
         if self.dump:
             with open (self.file_name,'a+') as text_file:

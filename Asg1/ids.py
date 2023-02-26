@@ -22,7 +22,7 @@ class ids:
             state = dls(self.start_state, self.goal_state,self.file_name,i,self.dump)
             result = state.graphSearch()
             if not result:
-                print("Solution not found at depth ", i)
+                print("at depth: ",i)
             else: 
                 break
             i += 1

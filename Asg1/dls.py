@@ -32,11 +32,11 @@ class dls:
             return False
         if self.dump:
             with open (self.file_name,'a+') as text_file:
-                text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\n")
+                text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in DLS Fashion\n")
                 text_file.close()
         empty_tile = Tools().find_zero_position(self.start_state)
-        start = node(self.start_state,{"Start"},0,0,None,empty_tile)
-        self.fringe.push(start)
+        start = node(self.start_state,self.goal_state,{"Start"},0,0,None,empty_tile)
+        self.fringe.enqueue(start)
         if self.dump:
             with open (self.file_name,'a+') as text_file:
                 text_file.write(f"Adding Start State to fringe.\nCurrent Fringe: {self.fringe}\n\n")
@@ -44,7 +44,7 @@ class dls:
         steps = []
         while not self.fringe.is_empty():
             pos = len(self.state_archive)
-            test_first_elem = self.fringe.pop()
+            test_first_elem = self.fringe.dequeue()
             if self.dump:
                 with open (self.file_name,'a+') as text_file:
                     text_file.write(f"Popping 1st element from fringe.\n")
@@ -74,24 +74,24 @@ class dls:
                         with open (self.file_name,'a+') as text_file:
                             text_file.write(f"Current state is not goal state, generating successors.\nGenerating successors to state > {test_first_elem}\n")
                             text_file.close()
-                    if test_first_elem.state not in self.closed:
-                        self.closed.append(test_first_elem.state)
-                        suc = self.generate_successor(test_first_elem,pos)
-                        if self.dump:
-                            with open (self.file_name,'a+') as text_file:
-                                text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
-                                text_file.close()
-                        for item in suc:
-                            if item.state not in self.closed:
-                                self.fringe.push(item)
-                        if self.dump:
-                            with open (self.file_name,'a+') as text_file:
-                                text_file.write(f"Fringe: {self.fringe}\n\n")
-                                text_file.close()
-                        self.node_expanded += 1
-                        if self.max_fringe_size < self.fringe.len_stack():
-                            self.max_fringe_size = self.fringe.len_stack()   
-        print("Solution not found")
+                    # if test_first_elem.state not in self.closed:
+                    # self.closed.append(test_first_elem.state)
+                    suc = self.generate_successor(test_first_elem,pos)
+                    if self.dump:
+                        with open (self.file_name,'a+') as text_file:
+                            text_file.write(f"{len(suc)} successors generated.\nAdding current state to closed list.\nClosed list: {self.closed}.\n")
+                            text_file.close()
+                    for item in suc:
+                        if item.state not in self.closed:
+                            self.fringe.enqueue(item)
+                    if self.dump:
+                        with open (self.file_name,'a+') as text_file:
+                            text_file.write(f"Fringe: {self.fringe}\n\n")
+                            text_file.close()
+                    self.node_expanded += 1
+                    if self.max_fringe_size < self.fringe.len_queue():
+                        self.max_fringe_size = self.fringe.len_queue()   
+        print("Solution not found ",end="")
         if self.dump:
             with open (self.file_name,'a+') as text_file:
                         text_file.write(f"Soultion no found\n")
