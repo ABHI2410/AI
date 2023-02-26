@@ -1,3 +1,4 @@
+## required import 
 import time
 import sys
 from bfs import bfs
@@ -8,8 +9,11 @@ from ids import ids
 from astar import astar
 from greedy import greedy
 
+## main driver function 
 if __name__ == "__main__":
-    begin = time.time()
+    begin = time.time()  ## initialzing clock 
+
+    ## reading sys args
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     method = sys.argv[3]
@@ -20,12 +24,16 @@ if __name__ == "__main__":
         dump_flag = True
     else:
         dump_flag = False
+    
+    ## reading content form input files
     with open (input_file , "r") as file:
         data = file.readlines()
     data = data[0:3]
     with open (output_file , "r") as file:
         goal = file.readlines()
     goal = goal [0:3]
+    
+    ## converting string data list into integer list of list and removing unwanted charates
     start = []
     output = []
     for i in range(0,3):
@@ -37,13 +45,18 @@ if __name__ == "__main__":
             start[i][j] = int(start[i][j])
             output[i][j] = int(output[i][j])
     
+    ## creating name for the log file 
     timestr = time.strftime("%Y%m%d-%H%M%S")
+
+    ## if dump flag is set creat log file and start log entry
     if dump_flag:
         data_dump = f"Command-Line Arguments : {sys.argv[1:]} \nMethod Selected: {method} \nRunning {method}\n\n"
         with open (f"trace-{timestr}.txt",'a+') as text_file:
             text_file.write(data_dump)
             text_file.close()
+    ## log file entry complete
 
+    ## if else ladder to selecte appropriate function as to perform the method specifed as arguments.
     if method == "bfs" or method == "BFSs":
         state = bfs(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
         result = state.graphSearch()
@@ -67,4 +80,5 @@ if __name__ == "__main__":
         state = astar(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
         result = state.graphSearch()
 
-    print(time.time()-begin)
+    ## print time required to run
+    print("Total run time: ",time.time()-begin," secs")
