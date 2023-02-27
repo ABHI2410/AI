@@ -5,39 +5,36 @@ from dfs import dfs
 from ucs import ucs
 from dls import dls
 from ids import ids
+from astar import astar
+from greedy import greedy
 
 if __name__ == "__main__":
-    start = time.time()
+    begin = time.time()
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     method = sys.argv[3]
-    try:
-        dump_flag = sys.argv[4]
-        if dump_flag == "true" or dump_flag == "True":
-            dump_flag = True
-        else:
-            dump_flag = False
-    except:
+    if method == "astar.py":
+        method = "a*"
+    dump_flag = sys.argv[4]
+    if dump_flag == "true" or dump_flag == "True":
+        dump_flag = True
+    else:
         dump_flag = False
-    try:
-        depth_limit = int(sys.argv[5])
-    except:
-        pass
     with open (input_file , "r") as file:
         data = file.readlines()
     data = data[0:3]
     with open (output_file , "r") as file:
         goal = file.readlines()
     goal = goal [0:3]
-    input = []
+    start = []
     output = []
     for i in range(0,3):
-        input.append(data[i].replace("\n","").split(" "))
+        start.append(data[i].replace("\n","").split(" "))
         output.append(goal[i].replace("\n","").split(" "))
     
     for i in range(0,3):
         for j in range(0,3):
-            input[i][j] = int(input[i][j])
+            start[i][j] = int(start[i][j])
             output[i][j] = int(output[i][j])
     
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -46,21 +43,28 @@ if __name__ == "__main__":
         with open (f"trace-{timestr}.txt",'a+') as text_file:
             text_file.write(data_dump)
             text_file.close()
-    if method == "bfs" or method == "BFS":
-        state = bfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+
+    if method == "bfs" or method == "BFSs":
+        state = bfs(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
         result = state.graphSearch()
     elif method == "dfs" or method == "DFS":
-        state = dfs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        state = dfs(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
         result = state.graphSearch()
     elif method == "ucs" or method == "UCS":
-        state = ucs(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        state = ucs(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
         result = state.graphSearch()
-    elif method == "dls" or method == "DLS":
-        state = dls(input, output,f"trace-{timestr}.txt", depth_limit,dump_flag = dump_flag)
+    if method == "dls" or method == "DLS":
+        depth_limit = input("Enter depth limit: ")
+        state = dls(start, output,f"trace-{timestr}.txt", int(depth_limit),dump_flag = dump_flag)
         result = state.graphSearch()
     elif method == "ids" or method == "IDS":
-        state = ids(input, output,f"trace-{timestr}.txt", dump_flag = dump_flag)
+        state = ids(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
         result = state.ids()
-    else:
-        print("Invalid input")
-    print(time.time()-start)
+    elif method == "greedy" or method == "GREEDY":
+        state = greedy(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
+        result = state.graphSearch()
+    elif method == "a*" or method == "A*":
+        state = astar(start, output,f"trace-{timestr}.txt",dump_flag = dump_flag)
+        result = state.graphSearch()
+
+    print(time.time()-begin)

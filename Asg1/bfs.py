@@ -26,7 +26,7 @@ class bfs:
                 text_file.write(f"Start State: {self.start_state} \nGoal State: {self.goal_state} \nFringe: {self.fringe}\nClosed list: {self.closed}.\nStarting Graph Search in BFS Fashion\n")
                 text_file.close()
         empty_tile = Tools().find_zero_position(self.start_state)
-        start = node(self.start_state,{"Start"},0,0,None,empty_tile)
+        start = node(self.start_state,self.goal_state,{"Start"},0,0,None,empty_tile)
         self.fringe.enqueue(start)
         if self.dump:
             with open (self.file_name,'a+') as text_file:
