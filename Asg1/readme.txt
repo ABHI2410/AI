@@ -79,19 +79,17 @@ How to Run the Code:
         * The envionment variable to run Python 3.10.6 program is set as python by default IF you have changed it please use the envionment variable
         defined by you.
     
-    Extra: 
+Extra: 
     For depth limited search/DLS/dls: If this method is selectd please provied the depth limit as imput when prompted on command line.
     
 
-
-    
-            Approximate run time of each algorithm 
+    Approximate run time of each algorithm for the provided sample StartFile and GoalFile
     *------------------------------------------------------------------------------*
     | methedology | time required with dump file | time required without dump file | 
     *------------------------------------------------------------------------------*
     |     bfs     |         7.745712 sec         |          0.136029 sec           |
     *------------------------------------------------------------------------------*
-    |     dfs     |         3.110014 sec         |          0.236178 sec           |
+    |     dfs     |          unknown sec         |          unknown sec            |
     *------------------------------------------------------------------------------*
     |     ucs     |        56.498704 sec         |          3.381236 sec           |
     *------------------------------------------------------------------------------*
